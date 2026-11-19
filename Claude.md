@@ -55,3 +55,20 @@ Both-negative vertices (both PSC < 0): controlled by `--discard-both-neg`.
 - Default: reflect into Q1 — swap and negate `(a_new = −b_old, b_new = −a_old)`,
   so the less-suppressed condition is treated as relatively preferred.
 - `--discard-both-neg`: set angle to NaN.
+
+## Upstream / downstream
+
+**Upstream** (what this repo reads):
+
+| folder (under `<project>/BIDS/derivatives` unless noted) | made by | | space |
+|---|---|---|---|
+| `l1_surface/analysis-final_v3_basic_MC` (PSC maps) | pyGLM | required | fsnative |
+| `freesurfer-with_t2/sub-XX/label/manual_label_clusters_analysis_27_v3/` | FreeSurfer + manual labels | ROI scripts | fsnative |
+
+**Downstream** (what it writes, and who reads it):
+
+| folder | what | space | read by |
+|---|---|---|---|
+| `angle_calculation/analysis-<name>/` | angle / magnitude maps, PC scores, loadings | fsnative | not read by another repo |
+
+Lab map with every repo: `~/soft/docs/repo_map.dot` → `docs/images/repo_map.png` (soft-conventions). A change of an output folder or its space updates this section, the sections of the repos named here, and the map, together.
