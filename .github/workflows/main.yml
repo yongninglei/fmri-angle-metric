@@ -1,5 +1,8 @@
 name: CI
 
+# Smoke check: install, every CLI answers --help. No tests exist yet.
+# The Sphinx docs job was removed (maintainer, 2026-11-19).
+
 on:
   push:
     branches: [main]
@@ -7,62 +10,15 @@ on:
     branches: [main]
 
 jobs:
-  # format:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-python@v5
-  #       with:
-  #         python-version: "3.10"
-  #     - run: pip install ruff
-  #     - run: ruff check .
-  #     - run: ruff format --check .
-
-  # tests:
-  #   runs-on: ${{ matrix.os }}
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       os: [ubuntu-latest, macos-latest]
-  #       python-version: ["3.10", "3.11", "3.12"]
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-python@v5
-  #       with:
-  #         python-version: ${{ matrix.python-version }}
-  #     - run: pip install -e .
-  #     - run: pip install pytest
-  #     - run: pytest tests/
-
-  build-docs:
+  smoke:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-
-      - name: Install pandoc
+      - uses: astral-sh/setup-uv@v5
+      - name: Entry points
         run: |
-          sudo apt-get update
-          sudo apt-get install -y pandoc
-
-      - name: Install package and docs dependencies
-        run: |
-          pip install -e .
-          pip install -r docs/requirements.txt
-
-      - name: Build HTML docs
-        run: |
-          cd docs && make html
-
-      - name: Disable Jekyll
-        run: touch docs/build/html/.nojekyll
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/build/html
-          destination_dir: ${{ github.ref_name }}
+          uv run angle-per-vertex --help > /dev/null
+          uv run pca-response-profile --help > /dev/null
+          uv run pca-cross-session --help > /dev/null
+          uv run angle-cross-session --help > /dev/null
+          uv run angle-roi-cross-session --help > /dev/null
